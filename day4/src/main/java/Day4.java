@@ -83,7 +83,7 @@ public class Day4 {
 				.filter(num -> !exploring.contains(num)).mapToInt(Integer::intValue).sum();
 		System.out.println("somme = " + somme);
 		System.out.println("input = " + input);
-		System.out.println("(somme * input) = " + (somme * input));
+		System.out.println("(somme * input) = " + ConsoleColors.cyan(somme * input));
 	}
 
 	private static class Board {

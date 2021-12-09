@@ -78,8 +78,8 @@ public class Day8 {
                         .map(s -> toNumber(s, numbers))
                         .collect(Collectors.joining(""));
 
-                System.out.println("numbers = " + numbers);
-                System.out.println("numberString = " + numberString);
+//                System.out.println("numbers = " + numbers);
+//                System.out.println("numberString = " + numberString);
 
                 assert numberString.length() == 4;
 
@@ -91,7 +91,7 @@ public class Day8 {
                 line = br.readLine();
             }
 
-            System.out.println("result = " + result);
+            System.out.println("result = " + ConsoleColors.cyan(result));
         }
     }
 

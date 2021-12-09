@@ -25,9 +25,9 @@ public class Day2 {
 
 				line = br.readLine();
 			}
-			System.out.println("horizontal = " + horizontal);
-			System.out.println("depth = " + depth);
-			System.out.println("depth*horizontal = " + (depth * horizontal));
+			System.out.println("horizontal = " + ConsoleColors.cyan(horizontal));
+			System.out.println("depth = " + ConsoleColors.cyan(depth));
+			System.out.println("depth*horizontal = " + ConsoleColors.cyan((depth * horizontal)));
 		}
 	}
 

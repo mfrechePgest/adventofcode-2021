@@ -29,7 +29,7 @@ public class Day1 {
                 }
                 previousDepth = depth;
             }
-            System.out.println("result = " + result);
+            System.out.println("result = " + ConsoleColors.cyan(result));
         }
     }
 

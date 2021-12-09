@@ -39,7 +39,7 @@ public class Day6 {
                 }
             }
 
-            System.out.println("Somme poissons : " + fishList.values().stream().mapToLong(l -> l).sum());
+            System.out.println("Somme poissons : " + ConsoleColors.cyan(fishList.values().stream().mapToLong(l -> l).sum()));
 
         }
     }

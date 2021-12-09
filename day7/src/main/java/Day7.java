@@ -19,7 +19,7 @@ public class Day7 {
                     .min()
                     .orElse(0);
 
-            System.out.println("minTotalFuel = " + totalFuel);
+            System.out.println("minTotalFuel = " + ConsoleColors.cyan(totalFuel));
         }
     }
 

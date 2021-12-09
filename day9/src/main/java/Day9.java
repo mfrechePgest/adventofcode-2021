@@ -27,7 +27,7 @@ public class Day9 {
                     Coord coord = new Coord(i, j);
                     if (getNeighbours(heightmap, coord)
                             .allMatch(neigh -> neigh.value > cell)) {
-                        System.out.println("cell = " + cell);
+//                        System.out.println("cell = " + cell);
                         resultFirstStep += 1 + cell;
                         List<Cell> basinFromCell = findBasinFromCell(heightmap, new Cell(cell, coord), new ArrayList<>());
 //                        System.out.println("basinFromCell = " + basinFromCell);
@@ -35,7 +35,7 @@ public class Day9 {
                     }
                 }
             }
-            System.out.println("resultFirstStep = " + resultFirstStep);
+            System.out.println("resultFirstStep = " + ConsoleColors.cyan(resultFirstStep));
 //            System.out.println("basins = " + basins);
             int resultSecondStep = basins.stream()
                     .map(List::size)
@@ -43,7 +43,7 @@ public class Day9 {
                     .limit(3)
                     .mapToInt(i -> i)
                     .reduce(1, (a, b) -> a * b);
-            System.out.println("resultSecondStep = " + resultSecondStep);
+            System.out.println("resultSecondStep = " + ConsoleColors.cyan(resultSecondStep));
 
 
         }
