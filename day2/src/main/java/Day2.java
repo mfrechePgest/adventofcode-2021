@@ -2,11 +2,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class SecondDay {
+public class Day2 {
 
 	public static void main(String[] args) throws IOException {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				SecondDay.class.getResourceAsStream("second_day_1.txt")))) {
+				Day2.class.getResourceAsStream("second_day_1.txt")))) {
 			String line = br.readLine();
 			int depth = 0;
 			int horizontal = 0;

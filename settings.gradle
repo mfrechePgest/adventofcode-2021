@@ -1,2 +1,12 @@
 rootProject.name = 'adventofcode'
+include 'first-day'
+include 'day2'
+include 'day1'
+include 'day3'
+include 'day4'
+include 'day5'
+include 'day6'
+include 'day7'
+include 'day8'
+include 'day9'
 

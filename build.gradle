@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
 }
 
 group 'org.example'
@@ -10,9 +9,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    javaMainClass = "SixthDay"
-}
 
 dependencies {
 
@@ -24,6 +20,17 @@ test {
     useJUnitPlatform()
 }
 
-application {
-    mainClassName = javaMainClass
+
+task run {
+    dependsOn ':day1:run'
+    dependsOn ':day2:run'
+    dependsOn ':day3:run'
+    dependsOn ':day4:run'
+    dependsOn ':day5:run'
+    dependsOn ':day6:run'
+    dependsOn ':day7:run'
+    dependsOn ':day8:run'
+    dependsOn ':day9:run'
 }
+
+

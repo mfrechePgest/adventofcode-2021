@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class SeventhDay {
+public class Day7 {
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                SecondDay.class.getResourceAsStream("seventh_day_1.txt")))) {
+                Day7.class.getResourceAsStream("seventh_day_1.txt")))) {
             String line = br.readLine();
 
             List<Integer> crabs = Arrays.stream(line.split(",")).map(Integer::parseInt).toList();

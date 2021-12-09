@@ -5,12 +5,12 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SixthDay {
+public class Day6 {
 
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                SecondDay.class.getResourceAsStream("sixth_day_1.txt")))) {
+                Day6.class.getResourceAsStream("sixth_day_1.txt")))) {
             String line = br.readLine();
 
             Map<Lanternfish, Long> fishList = Arrays.stream(line.split(","))

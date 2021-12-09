@@ -1,18 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Array;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class EighthDay {
+public class Day8 {
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                SecondDay.class.getResourceAsStream("eighth_day_1.txt")))) {
+                Day8.class.getResourceAsStream("eighth_day_1.txt")))) {
             String line = br.readLine();
 
             long result = 0;
@@ -23,7 +21,7 @@ public class EighthDay {
                 String output = splitted[1];
 
                 List<List<Character>> inputs = new ArrayList<>(Arrays.stream(input.split(" "))
-                        .map(EighthDay::getCharsList)
+                        .map(Day8::getCharsList)
                         .distinct()
                         .toList());
 

@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class FourthDay {
+public class Day4 {
 
 	public static void main(String[] args) throws IOException {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				SecondDay.class.getResourceAsStream("fourth_day_1.txt")))) {
+				Day4.class.getResourceAsStream("fourth_day_1.txt")))) {
 			String line = br.readLine();
 
 			List<Integer> inputs = Arrays.stream(line.split(",")).map(Integer::parseInt)

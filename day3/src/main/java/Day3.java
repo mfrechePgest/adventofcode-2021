@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class ThirdDay {
+public class Day3 {
 
 	public static void main(String[] args) throws IOException {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				ThirdDay.class.getResourceAsStream("third_day_1.txt")))) {
+				Day3.class.getResourceAsStream("third_day_1.txt")))) {
 			String line = br.readLine();						
 			List<String> allBinaries = new ArrayList<>();
 			while (line != null) {				

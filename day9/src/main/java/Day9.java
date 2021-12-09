@@ -4,11 +4,11 @@ import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class NinthDay {
+public class Day9 {
 
     public static void main(String[] args) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                SecondDay.class.getResourceAsStream("day_9_1.txt")))) {
+                Day9.class.getResourceAsStream("day_9_1.txt")))) {
             String line = br.readLine();
 
             List<List<Integer>> heightmap = new ArrayList<>();

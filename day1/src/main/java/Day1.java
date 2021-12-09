@@ -4,10 +4,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstDay {
+public class Day1 {
 
     public static void main(String[] args) throws IOException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(FirstDay.class.getResourceAsStream("first_day.txt")))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(Day1.class.getResourceAsStream("first_day.txt")))) {
             String line = br.readLine();
             int result = 0;
             int currentIdx = 0;

@@ -10,18 +10,18 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-public class FifthDay {
+public class Day5 {
 
 	private BufferedReader br;
 	private final Map<Point, AtomicInteger> coveredPoints;
 	private String currentLine = null;
 
-	public FifthDay() {
+	public Day5() {
 		coveredPoints = new HashMap<>();
 	}
 
 	public static void main(String[] args) throws IOException {
-		FifthDay event = new FifthDay();
+		Day5 event = new Day5();
 		event.openFile("fifth_day_sample.txt");
 		while (event.hasMoreLines()) {
 			event.readLine();
