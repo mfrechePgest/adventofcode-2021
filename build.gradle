@@ -1,3 +1,6 @@
+import java.util.stream.Collectors;
+
+
 plugins {
     id 'java'
 }
@@ -8,30 +11,3 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
 }
-
-
-dependencies {
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-}
-
-test {
-    useJUnitPlatform()
-}
-
-
-task run {
-    dependsOn ':day1:run'
-    dependsOn ':day2:run'
-    dependsOn ':day3:run'
-    dependsOn ':day4:run'
-    dependsOn ':day5:run'
-    dependsOn ':day6:run'
-    dependsOn ':day7:run'
-    dependsOn ':day8:run'
-    dependsOn ':day9:run'
-    dependsOn ':day10:run'
-}
-
-
