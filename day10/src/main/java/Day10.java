@@ -63,6 +63,14 @@ public class Day10 {
                             openingBraces.removeLast();
                         } else {
                             points += mapPoints.get(c);
+                            for ( int j = 0 ; j < line.length() ; j++ ) {
+                                if (j == i) {
+                                    System.out.print(ConsoleColors.coloredString(line.charAt(j),ConsoleColors.RED));
+                                } else {
+                                    System.out.print(line.charAt(j));
+                                }
+                            }
+                            System.out.println("");
                             corrupted = true;
                             break;
                         }
@@ -76,13 +84,15 @@ public class Day10 {
                     resultPart1 += points;
                 } else {
                     long points2 = 0;
+                    System.out.print(line);
                     while(!openingBraces.isEmpty()) {
                         Character lastChar = openingBraces.removeLast();
                         points2 *= 5;
-                        points2 += mapPointsPartTwo.get(
-                                mapClosers.get(lastChar)
-                        );
+                        Character missingBrace = mapClosers.get(lastChar);
+                        points2 += mapPointsPartTwo.get(missingBrace);
+                        System.out.print(ConsoleColors.coloredString(missingBrace,ConsoleColors.RED));
                     }
+                    System.out.println("");
                     System.out.println("points Part 2 = " + ConsoleColors.coloredString(points2, ConsoleColors.GREEN));
                     resultPart2.add(points2);
 
