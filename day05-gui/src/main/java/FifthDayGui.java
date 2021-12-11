@@ -1,4 +1,3 @@
-import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -157,27 +156,15 @@ public class FifthDayGui {
             }
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-//            glColor4f(0.05f, 0.03f, 0.5f, 0.0f);
-//            glBegin(GL_QUADS);
-//            {
-//                glVertex2f(-0.9f, 0.9f);
-//                glVertex2f(0.9f, 0.9f);
-//                glVertex2f(0.9f, -0.9f);
-//                glVertex2f(-0.9f, -0.9f);
-//            }
-//            glEnd();
-
-
             int max = event.getCoveredPoints().keySet()
                     .stream()
                     .flatMap(point -> Stream.of(point.x, point.y))
                     .mapToInt(i -> i + 1)
                     .max().orElse(5);
             float largeurCarre = (0.9f * 2) / max;
-//            glColor4f(0.49f, 0.34f, 0.24f, 0.95f);
-//            glColor4f(1.0f, 0.99f, 0.01f, 0.95f);
+
             for (Map.Entry<Day5.Point, AtomicInteger> entry : event.getCoveredPoints().entrySet()) {
-//                glColor4f(0.3f * entry.getValue().intValue(), 0.03f, 0.03f, 0.95f);
+
                 glColor4f(0.49f +
                                 0.1f * (entry.getValue().intValue()-1)
                         , 0.34f +
