@@ -26,6 +26,7 @@ public class Day11Gui {
     private Thread computationThread = null;
 
     private Colors[][] currentColors;
+    private Float[][] currentEspacement = null;
 
 
     private final ImageParser resource_01 = ImageParser.load_image("img_2.png");
@@ -186,12 +187,13 @@ public class Day11Gui {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             float largeurCaseOctopus = (0.9f * 2) / currentSituation.octopusses().length;
-            float espacement = 0.05f;
+            final float espacement = largeurCaseOctopus / 7f;
 
             for (int x = 0; x < currentSituation.octopusses().length; x++) {
                 for (int y = 0; y < currentSituation.octopusses()[x].length; y++) {
                     int value = currentSituation.octopusses()[x][y];
-                    Colors targetColor = mapValueToColor(value, currentSituation.enlightened().contains(new Day11.Cell(x, y)));
+                    boolean isEnlightened = currentSituation.enlightened().contains(new Day11.Cell(x, y));
+                    Colors targetColor = mapValueToColor(value, isEnlightened);
                     currentColors[x][y] = new Colors(currentColors[x][y].red + ((targetColor.red - currentColors[x][y].red) / FP_STEP)
                             , currentColors[x][y].green + ((targetColor.green - currentColors[x][y].green) / FP_STEP)
                             , currentColors[x][y].blue + ((targetColor.blue - currentColors[x][y].blue) / FP_STEP)
@@ -200,14 +202,25 @@ public class Day11Gui {
                             currentColors[x][y].green,
                             currentColors[x][y].blue,
                             currentColors[x][y].alpha);
+                    float octopusEspacement = espacement;
+                    if (value < 9 && !isEnlightened) {
+                        octopusEspacement += espacement - (espacement * (value / 9f));
+                    }
+                    if (currentEspacement == null || currentEspacement[x][y] == null) {
+                        currentEspacement = new Float[currentSituation.octopusses().length][currentSituation.octopusses().length];
+                        currentEspacement[x][y] = octopusEspacement;
+                    } else {
+                        currentEspacement[x][y] = currentEspacement[x][y] + ((octopusEspacement - currentEspacement[x][y]) / FP_STEP);
+                    }
+                    octopusEspacement = currentEspacement[x][y];
                     glBegin(GL_QUADS);
                     {
-                        float originX = (x * largeurCaseOctopus) - 0.9f + espacement;
-                        float originY = ((y * largeurCaseOctopus) - 0.9f) * -1 - espacement;
-                        glVertex2f(originX, originY);
-                        glVertex2f(originX + largeurCaseOctopus - espacement, originY);
-                        glVertex2f(originX + largeurCaseOctopus - espacement, originY - largeurCaseOctopus + espacement);
-                        glVertex2f(originX, originY - largeurCaseOctopus + espacement);
+                        float originX = (x * largeurCaseOctopus) - 0.9f;
+                        float originY = ((y * largeurCaseOctopus) - 0.9f) * -1;
+                        glVertex2f(originX  + octopusEspacement, originY - octopusEspacement);
+                        glVertex2f(originX + largeurCaseOctopus - octopusEspacement, originY - octopusEspacement);
+                        glVertex2f(originX + largeurCaseOctopus - octopusEspacement, originY - largeurCaseOctopus + octopusEspacement);
+                        glVertex2f(originX  + octopusEspacement, originY - largeurCaseOctopus + octopusEspacement);
                     }
                     glEnd();
                 }
