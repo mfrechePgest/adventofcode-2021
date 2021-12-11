@@ -67,9 +67,9 @@ public class Day5 {
 		currentLine = br.readLine();
 	}
 
-	private static class Point {
-		private final int x;
-		private final int y;
+	protected static class Point {
+		protected final int x;
+		protected final int y;
 
 		public Point(int x, int y) {
 			this.x = x;
