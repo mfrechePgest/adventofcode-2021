@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-public class Day5 {
+public class Day5 implements IDay {
 
 	private BufferedReader br;
 	private final Map<Point, AtomicInteger> coveredPoints;
@@ -39,12 +39,14 @@ public class Day5 {
 		
 	}
 
+	@Override
 	public void openFile(String fileName) throws IOException {
 		br = new BufferedReader(
 				new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
 		currentLine = br.readLine();
 	}
 
+	@Override
 	public void closeFile() throws IOException {
 		br.close();
 	}
@@ -53,10 +55,12 @@ public class Day5 {
 		return coveredPoints;
 	}
 
+	@Override
 	public boolean hasMoreLines() {
 		return currentLine != null;
 	}
 
+	@Override
 	public void readLine() throws IOException {
 		String[] splitLine = currentLine.split(" -> ");
 		Point origin = new Point(splitLine[0]);
