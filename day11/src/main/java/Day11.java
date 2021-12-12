@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Day11 implements IDay {
+public class Day11 extends AbstractDay {
 
     private BufferedReader br;
     private String currentLine = null;
@@ -116,21 +116,7 @@ public class Day11 implements IDay {
                 .collect(Collectors.joining("\n"));
     }
 
-    @Override
-    public void openFile(String fileName) throws IOException {
-        br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(fileName)));
-        currentLine = br.readLine();
-    }
 
-    @Override
-    public void closeFile() throws IOException {
-        br.close();
-    }
-
-    @Override
-    public boolean hasMoreLines() {
-        return currentLine != null;
-    }
 
     @Override
     public void readLine() throws IOException {
