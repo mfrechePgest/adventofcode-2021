@@ -8,12 +8,10 @@ public class Day12 extends AbstractDay {
     public final static String STARTING_CELL = "start";
     public final static String ENDING_CELL = "end";
 
-    private Map<String, Cell> cells = new HashMap<>();
+    private final Map<String, Cell> cells = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         Day12 day12 = new Day12("day12_1.txt");
-
-
 
         List<Path> paths = day12.findPathFromStartToEnd(Step.STEP_1);
         System.out.println("STEP 1 : Paths = \n" + paths.stream().map(Path::toString).collect(Collectors.joining("\n")));
