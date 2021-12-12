@@ -10,4 +10,8 @@ Usage :
 
 `./gradlew :day05:run` pour lancer le jour 5, par exemple
 
+Je me suis amusé à faire une visualisation pour certaines journées :
+
 `./gradlew :day05-gui:run` pour lancer la visualization du jour 5
+
+`./gradlew :day11-gui:run` pour lancer la visualization du jour 11
