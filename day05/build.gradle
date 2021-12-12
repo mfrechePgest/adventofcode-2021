@@ -15,5 +15,5 @@ dependencies {
 }
 
 application {
-    mainClassName = "Day5"
+    getMainClass().set("Day5")
 }
