@@ -40,7 +40,7 @@ public class Day12Test {
     private void assertDay12(String fileName, Day12.Step stepMode, int expectedPathCount) throws IOException {
         Day12 day12 = new Day12(fileName);
         List<Day12.Path> paths = day12.findPathFromStartToEnd(stepMode);
-
+        System.out.println(fileName +  " , " + stepMode + " = " + paths.size());
         Assertions.assertEquals(expectedPathCount, paths.size());
     }
 
