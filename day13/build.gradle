@@ -22,5 +22,5 @@ test {
 }
 
 application {
-    getMainClass().set("Day12")
+    getMainClass().set("Day13")
 }
