@@ -16,6 +16,7 @@ public class Day13 extends AbstractDay {
         while (this.hasMoreLines()) {
             this.readLine();
         }
+        this.closeFile();
     }
 
     public static void main(String[] args) throws IOException {
@@ -37,13 +38,8 @@ public class Day13 extends AbstractDay {
         // Ensuite les points qui sont pliés
         foldedDots.addAll(
                 dots.stream()
-                        .filter(dot -> instruction.isVertical() ? dot.x() > instruction.coord() : dot.y() > instruction.coord())
-                        .map(dot -> new Cell(
-                                instruction.isVertical() ? dot.x() - (2 * (dot.x() - instruction.coord()))
-                                        : dot.x(),
-                                instruction.isVertical() ? dot.y()
-                                        : dot.y() - (2 * (dot.y() - instruction.coord()))
-                        ))
+                        .filter(dot -> dot.shouldMoveDuringFolding(instruction))
+                        .map(dot -> dot.getFuturePositionAfterFolding(instruction))
                         .filter(dot -> !foldedDots.contains(dot))
                         .toList()
         );
@@ -103,4 +99,18 @@ public class Day13 extends AbstractDay {
     public int getDotCount() {
         return dots.size();
     }
+
+    public Situation getSituation() {
+        return new Situation(dots, maxX, maxY);
+    }
+
+    public FoldingInstruction getNextFoldingInstruction() {
+        return foldingInstructions.isEmpty() ? null : foldingInstructions.getFirst();
+    }
+
+
+
+
+
+    public record Situation(List<Cell> dots, int maxX, int maxY) {}
 }

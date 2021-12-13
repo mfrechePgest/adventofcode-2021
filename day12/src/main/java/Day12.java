@@ -34,6 +34,7 @@ public class Day12 extends AbstractDay {
         while (this.hasMoreLines()) {
             this.readLine();
         }
+        this.closeFile();
     }
 
     public List<Path> findPathFromStartToEnd(Step stepMode) {
