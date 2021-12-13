@@ -27,14 +27,14 @@ public class Day13Test {
 
         // THEN
         Assertions.assertEquals("""
-                        #####
-                        #...#
-                        #...#
-                        #...#
-                        #####
-                        .....
-                        .....
-                        """,
+                        █████
+                        █   █
+                        █   █
+                        █   █
+                        █████
+                        """ +
+                        "     \n" +
+                        "     \n",
                 day13.toStringColorized(false));
     }
 

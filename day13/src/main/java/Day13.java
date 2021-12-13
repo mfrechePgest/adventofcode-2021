@@ -66,9 +66,9 @@ public class Day13 extends AbstractDay {
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
                 if (dots.contains(new Cell(x, y))) {
-                    sb.append(color ? ConsoleColors.coloredString("#",ConsoleColors.RED) : "#");
+                    sb.append(color ? ConsoleColors.coloredString("█",ConsoleColors.RED) : "█");
                 } else {
-                    sb.append(".");
+                    sb.append(" ");
                 }
             }
             sb.append("\n");
