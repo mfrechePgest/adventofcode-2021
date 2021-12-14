@@ -15,4 +15,5 @@ include 'day11-gui'
 include 'day12'
 include 'day13'
 include 'day13-gui'
+include 'day14'
 
