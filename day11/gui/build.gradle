@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation(parent)
-    implementation project(':day13')
+    implementation(parent.parent)
 
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
@@ -40,5 +40,5 @@ dependencies {
 }
 
 application {
-    getMainClass().set("Day13Gui")
+    getMainClass().set("Day11Gui")
 }

@@ -11,10 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 public class Day5 extends AbstractDay {
-
-	private BufferedReader br;
-	private final Map<Point, AtomicInteger> coveredPoints;
-	private String currentLine = null;
+	
+	private final Map<Point, AtomicInteger> coveredPoints;	
 
 	public Day5() {
 		coveredPoints = new HashMap<>();

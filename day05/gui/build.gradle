@@ -1,3 +1,5 @@
+import org.gradle.internal.os.OperatingSystem
+
 plugins {
     id 'java'
     id 'application'
@@ -7,14 +9,15 @@ ext {
     lwjglVersion = "3.3.0"
 }
 
-switch (org.gradle.internal.os.OperatingSystem.current()) {
-    case org.gradle.internal.os.OperatingSystem.LINUX:
+switch (OperatingSystem.current()) {
+    case OperatingSystem.LINUX:
         project.ext.lwjglNatives = "natives-linux"
         break
-    case org.gradle.internal.os.OperatingSystem.WINDOWS:
+    case OperatingSystem.WINDOWS:
         project.ext.lwjglNatives = "natives-windows"
         break
 }
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -24,7 +27,7 @@ repositories {
 
 dependencies {
     implementation(parent)
-    implementation project(':day11')
+    implementation(parent.parent)
 
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
 
@@ -40,5 +43,5 @@ dependencies {
 }
 
 application {
-    getMainClass().set("Day11Gui")
+    getMainClass().set("FifthDayGui")
 }

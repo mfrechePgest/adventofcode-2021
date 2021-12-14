@@ -10,8 +10,6 @@ import java.util.stream.Stream;
 
 public class Day11 extends AbstractDay {
 
-    private BufferedReader br;
-    private String currentLine = null;
     private int currentLineNb = 0;
     private int[][] octopusses = null;
 
