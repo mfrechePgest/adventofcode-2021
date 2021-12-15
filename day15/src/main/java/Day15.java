@@ -1,8 +1,4 @@
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Day15 extends AbstractDay {
 
@@ -10,20 +6,19 @@ public class Day15 extends AbstractDay {
     private int currentLineReadProgress = 0;
 
     public static void main(String[] args) throws IOException {
-        Day15 day15 = new Day15("sample.txt");
+        Day15 day15 = new Day15("1.txt");
 
-        System.out.println(Arrays.stream(day15.cells)
-                .map(ligne -> Arrays.stream(ligne).map(c -> String.valueOf(c.value())).collect(Collectors.joining("")))
-                .collect(Collectors.joining("\n")));
+
+        long timeStart = System.currentTimeMillis();
         Path bestPath = day15.getBestPath();
-        System.out.println("result = " + bestPath.totalCost());
+        System.out.println("result 1 = " + bestPath.totalCost() + " ; t = " + (System.currentTimeMillis()-timeStart) + "ms");
 
+        timeStart = System.currentTimeMillis();
         day15.expandMap();
-        System.out.println(Arrays.stream(day15.cells)
-                .map(ligne -> Arrays.stream(ligne).map(c -> c != null ? String.valueOf(c.value()) : "N").collect(Collectors.joining("")))
-                .collect(Collectors.joining("\n")));
+        System.out.println("Temps calcul nouvelle map : " + (System.currentTimeMillis()-timeStart) + "ms");
+        timeStart = System.currentTimeMillis();
         Path bestPathStep2 = day15.getBestPath();
-        System.out.println("result = " + bestPathStep2.totalCost());
+        System.out.println("result 2 = " + bestPathStep2.totalCost() + " ; t = " + (System.currentTimeMillis()-timeStart) + "ms");
     }
 
 
@@ -59,13 +54,13 @@ public class Day15 extends AbstractDay {
             for (int multiplyY = 0; multiplyY < 5; multiplyY++) {
                 for (int x = 0; x < cells.length; x++) {
                     for (int y = 0; y < cells.length; y++) {
-                        int value = cells[x][y].value() + (multiplyX ) + (multiplyY );
+                        int value = cells[x][y].value() + (multiplyX) + (multiplyY);
                         while (value > 9) {
                             value -= 9;
                         }
-                        newMap[x + (cells.length * multiplyX)][y + (cells.length * multiplyY)] =
-                                new Cell(x * multiplyX, y * multiplyY,
-                                        value);
+                        int newX = x + (cells.length * multiplyX);
+                        int newY = y + (cells.length * multiplyY);
+                        newMap[newX][newY] = new Cell(newX, newY, value);
                     }
                 }
             }
