@@ -55,15 +55,15 @@ public class Day15 extends AbstractDay {
 
     public void expandMap() {
         Cell[][] newMap = new Cell[cells.length * 5][cells.length * 5];
-        for (int multiplyX = 1; multiplyX <= 5; multiplyX++) {
-            for (int multiplyY = 1; multiplyY <= 5; multiplyY++) {
+        for (int multiplyX = 0; multiplyX < 5; multiplyX++) {
+            for (int multiplyY = 0; multiplyY < 5; multiplyY++) {
                 for (int x = 0; x < cells.length; x++) {
                     for (int y = 0; y < cells.length; y++) {
-                        int value = cells[x][y].value() + (multiplyX - 1) + (multiplyY - 1);
+                        int value = cells[x][y].value() + (multiplyX ) + (multiplyY );
                         while (value > 9) {
                             value -= 9;
                         }
-                        newMap[x * multiplyX][y * multiplyY] =
+                        newMap[x + (cells.length * multiplyX)][y + (cells.length * multiplyY)] =
                                 new Cell(x * multiplyX, y * multiplyY,
                                         value);
                     }
