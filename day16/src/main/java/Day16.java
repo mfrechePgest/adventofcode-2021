@@ -9,30 +9,25 @@ public class Day16 extends AbstractDay {
 
     private String inputLine = null;
 
-    private static final Map<Character, String> mapBits;
+    private static final Map<Character, String> mapBits = Map.ofEntries(
+            Map.entry('0', "0000"),
+            Map.entry('1', "0001"),
+            Map.entry('2', "0010"),
+            Map.entry('3', "0011"),
+            Map.entry('4', "0100"),
+            Map.entry('5', "0101"),
+            Map.entry('6', "0110"),
+            Map.entry('7', "0111"),
+            Map.entry('8', "1000"),
+            Map.entry('9', "1001"),
+            Map.entry('A', "1010"),
+            Map.entry('B', "1011"),
+            Map.entry('C', "1100"),
+            Map.entry('D', "1101"),
+            Map.entry('E', "1110"),
+            Map.entry('F', "1111")
+    );
     private int totalVersion = 0;
-
-    static {
-        mapBits = Map.ofEntries(
-                Map.entry('0', "0000"),
-                Map.entry('1', "0001"),
-                Map.entry('2', "0010"),
-                Map.entry('3', "0011"),
-                Map.entry('4', "0100"),
-                Map.entry('5', "0101"),
-                Map.entry('6', "0110"),
-                Map.entry('7', "0111"),
-                Map.entry('8', "1000"),
-                Map.entry('9', "1001"),
-                Map.entry('A', "1010"),
-                Map.entry('B', "1011"),
-                Map.entry('C', "1100"),
-                Map.entry('D', "1101"),
-                Map.entry('E', "1110"),
-                Map.entry('F', "1111")
-        );
-
-    }
 
 
     public static void main(String[] args) throws IOException {
