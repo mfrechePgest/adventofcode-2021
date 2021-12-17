@@ -42,7 +42,7 @@ public class Day17 {
             for (int j = -500 ; j < 500 ; j++ ) {
                 Integer maxY = simulateThrow(i, j);
                 if ( maxY != null ) {
-                    System.out.println("Lancé valide : " + i +","+j);
+//                    System.out.println("Lancé valide : " + i +","+j);
                     count++;
                 }
             }
@@ -53,18 +53,23 @@ public class Day17 {
     public Integer simulateThrow(int xVelocity, int yVelocity) {
         Position probePosition = new Position(0, 0);
         int highestY = 0;
-        for (int i = 0; i < 1000; i++) { // TODO condition vélocité m'emmène tjrs dans la bonne direction
+        while (true) {
             probePosition = probePosition.move(xVelocity, yVelocity);
             if (probePosition.y() > highestY ) {
                 highestY = probePosition.y();
             }
-            xVelocity += xVelocity > 0 ? -1 : 1;
+            if (xVelocity != 0) {
+                xVelocity += xVelocity > 0 ? -1 : 1;
+            }
             yVelocity -= 1;
             if (probePosition.isInTarget(targetArea)) {
                 return highestY;
+            } else if (probePosition.y() < targetArea.minY()) {
+                return null; // c'est fini on est passé en dessous
+            } else if ( xVelocity == 0 && probePosition.x() < targetArea.minX() ) {
+                return null; // On n'avance plus dans la direction
             }
         }
-        return null;
     }
 
     public record TargetArea(int minX, int maxX, int minY, int maxY) {
