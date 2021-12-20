@@ -12,8 +12,10 @@ public class Day19 extends AbstractDay {
 
     public static void main(String[] args) throws IOException {
         Day19 day19 = new Day19("input.txt");
-        int totalBeacon = day19.findTotalBeacons().size();
+        Cartographie carto = day19.findTotalBeacons();
+        int totalBeacon = carto.beacons.size();
         System.out.println("totalBeacon = " + totalBeacon);
+        System.out.println("largest manathan dist = " + Day19.findLargestDistance(carto.scanners));
     }
 
     public Day19(String fileName) throws IOException {
@@ -22,6 +24,13 @@ public class Day19 extends AbstractDay {
             this.readLine();
         }
         this.closeFile();
+    }
+
+    public static long findLargestDistance(List<Point3d> scanners) {
+        return scanners.stream()
+                .flatMap(s -> scanners.stream().map(otherPoint -> s.manathanDistance(otherPoint)))
+                .mapToLong(l -> l)
+                .max().orElse(0);
     }
 
 
@@ -113,18 +122,21 @@ public class Day19 extends AbstractDay {
     }
 
 
-    public List<Point3d> findTotalBeacons() {
+    public Cartographie findTotalBeacons() {
         Map<Integer, Integer> migratedToPov = new HashMap<>();
         Map<Integer, Set<Point3d>> beacons = new HashMap<>();
         scanMap.keySet().forEach(i -> migratedToPov.put(i, i));
         scanMap.forEach((key, value) -> beacons.put(key, new HashSet<>(value)));
+        ArrayList<Point3d> scanners = new ArrayList<>();
+        Point3d origin = new Point3d(0, 0, 0);
+        scanners.add(origin);
 
-//        while(beacons.size() > 1) {
-//            List<Integer> listMigratedToZero = migratedToPov.entrySet().stream()
-//                    .filter(e -> e.getValue() == 0)
-//                    .map(Map.Entry::getKey)
-//                    .toList();
-            for (int scanId : scanMap.keySet()) {
+        while(beacons.size() > 1) {
+            List<Integer> listMigratedToZero = migratedToPov.entrySet().stream()
+                    .filter(e -> e.getValue() == 0)
+                    .map(Map.Entry::getKey)
+                    .toList();
+            for (int scanId : listMigratedToZero) {
                 for (int scanId2 : scanMap.keySet()) {
                     if (scanId != scanId2 && !migratedToPov.get(scanId2).equals(migratedToPov.get(scanId))) {
                         Function<Point3d, Point3d> func = findFunctionTransformBeacon(getBeacons(scanId2), getBeacons(scanId));
@@ -135,6 +147,9 @@ public class Day19 extends AbstractDay {
                                 System.out.println("scanId + scanId2 = " + scanId + " + " +scanId2);
                                 Integer newGrappe = migratedToPov.get(scanId);
                                 Integer previousGrappe = migratedToPov.get(scanId2);
+                                if (newGrappe == 0) {
+                                    scanners.add(func.apply(origin));
+                                }
 
                                 scanMap.put(scanId2, beaconFromFirstPerspective);
 
@@ -143,10 +158,11 @@ public class Day19 extends AbstractDay {
                         }
                     }
                 }
-//            }
-//            System.out.println("Un tour complet a été fait beacons = " + beacons.size() + " grappe 0 = "+ beacons.get(0).size());
+            }
+            System.out.println("Un tour complet a été fait beacons = " + beacons.size() + " grappe 0 = "+ beacons.get(0).size());
         }
-        return beacons.values().stream().flatMap(Collection::stream).toList();
+
+        return new Cartographie(beacons.values().stream().flatMap(Collection::stream).toList(), scanners);
     }
 
     private void rassembler2Grappes(Map<Integer, Integer> migratedToPov,
@@ -180,5 +196,8 @@ public class Day19 extends AbstractDay {
 
     public List<Point3d> getBeacons(int scannerId) {
         return scanMap.get(scannerId);
+    }
+
+    public record Cartographie(List<Point3d> beacons, List<Point3d> scanners) {
     }
 }

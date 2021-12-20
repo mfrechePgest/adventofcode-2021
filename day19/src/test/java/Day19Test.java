@@ -102,10 +102,20 @@ public class Day19Test {
     public void findTotalBeaconCount() throws IOException {
         Day19 day19 = new Day19("sample.txt");
 
-        List<Point3d> totalBeacons = day19.findTotalBeacons();
+        List<Point3d> totalBeacons = day19.findTotalBeacons().beacons();
         int totalBeaconCount = totalBeacons.size();
 
         assertEquals(79, totalBeaconCount);
+    }
+
+    @Test
+    public void findGreaterDistance() throws IOException {
+        Day19 day19 = new Day19("sample.txt");
+
+        List<Point3d> scanners = day19.findTotalBeacons().scanners();
+        long greatestDistance = Day19.findLargestDistance(scanners);
+
+        assertEquals(3621, greatestDistance);
     }
 
     @Test
@@ -230,6 +240,41 @@ public class Day19Test {
                 assertTrue(totalBeacons.contains(expected), "Devrait contenir " + expected)
         );
 
+    }
+
+    @Test
+    public void testCommutativite() throws IOException {
+        Day19 day19 = new Day19("input.txt");
+
+        List<Point3d> beacons20 = day19.getBeacons(20);
+        List<Point3d> beacons0 = day19.getBeacons(0);
+        Function<Point3d, Point3d> func = Day19.findFunctionTransformBeacon(beacons0, beacons20);
+        assertNotNull(func);
+
+        Function<Point3d, Point3d> finalFunc = func;
+        Set<PointPair> pairs = beacons0.stream()
+                .filter(p -> beacons20.contains(finalFunc.apply(p)))
+                .map(p -> new PointPair(p, finalFunc.apply(p)))
+                .collect(Collectors.toSet());
+
+        System.out.println("pairs = \n" + pairs.stream().map(p -> "p1 (scanner0) = " +p.p1() + " => p2 (scanner20) = " +p.p2()).collect(Collectors.joining("\n")));
+
+        func = Day19.findFunctionTransformBeacon(beacons20, beacons0);
+        assertNotNull(func);
+    }
+
+
+    @Test
+    public void testJeromeSample() throws IOException {
+        Day19 day19 = new Day19("jerome.in");
+
+        Day19.Cartographie carto = day19.findTotalBeacons();
+        List<Point3d> totalBeacons = carto.beacons();
+        int totalBeaconCount = totalBeacons.size();
+        assertEquals(438, totalBeaconCount);
+
+        long greatestDistance = Day19.findLargestDistance(carto.scanners());
+        assertEquals(11985, greatestDistance);
     }
 
 

@@ -40,11 +40,13 @@ public record PointPair(Point3d p1, Point3d p2) {
                         find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Y, Axe.X, Axe.Z),
                         find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.X, Axe.Z, Axe.Y),
                         find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Z, Axe.Y, Axe.X),
+                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Y, Axe.Z, Axe.X),
                         find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Z, Axe.X, Axe.Y),
 
                         find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Y, Axe.X, Axe.Z),
                         find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.X, Axe.Z, Axe.Y),
                         find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Z, Axe.Y, Axe.X),
+                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Y, Axe.Z, Axe.X),
                         find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Z, Axe.X, Axe.Y)
                 )
                 .filter(Objects::nonNull)

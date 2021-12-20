@@ -27,5 +27,11 @@ public record Point3d(int x, int y, int z) {
         return new Point3d(x - toSub.x(), y - toSub.y(), z - toSub.z());
     }
 
+    public long manathanDistance(Point3d otherPoint) {
+        return Math.abs(x - otherPoint.x()) +
+                Math.abs(y - otherPoint.y()) +
+                Math.abs(z - otherPoint.z());
+    }
+
 
 }
