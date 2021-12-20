@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -33,24 +32,23 @@ public record PointPair(Point3d p1, Point3d p2) {
 
     public List<Function<Point3d, Point3d>> findDiffPoint(PointPair pointPair) {
 
-        return Stream.of(
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1()),
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2()),
-
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Y, Axe.X, Axe.Z),
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.X, Axe.Z, Axe.Y),
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Z, Axe.Y, Axe.X),
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Y, Axe.Z, Axe.X),
-                        find3dPointDiff(this.p1(), pointPair.p2(), this.p2(), pointPair.p1(), Axe.Z, Axe.X, Axe.Y),
-
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Y, Axe.X, Axe.Z),
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.X, Axe.Z, Axe.Y),
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Z, Axe.Y, Axe.X),
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Y, Axe.Z, Axe.X),
-                        find3dPointDiff(this.p1(), pointPair.p1(), this.p2(), pointPair.p2(), Axe.Z, Axe.X, Axe.Y)
+        return Stream.concat(
+                        getStreamFunction(this.p1(), pointPair.p2(), this.p2(), pointPair.p1()),
+                        getStreamFunction(this.p1(), pointPair.p1(), this.p2(), pointPair.p2())
                 )
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    private Stream<Function<Point3d, Point3d>> getStreamFunction(Point3d p1, Point3d p1bis, Point3d p2, Point3d p2bis) {
+        return Stream.of(
+                find3dPointDiff(p1, p1bis, p2, p2bis),
+                find3dPointDiff(p1, p1bis, p2, p2bis, Axe.Y, Axe.X, Axe.Z),
+                find3dPointDiff(p1, p1bis, p2, p2bis, Axe.X, Axe.Z, Axe.Y),
+                find3dPointDiff(p1, p1bis, p2, p2bis, Axe.Z, Axe.Y, Axe.X),
+                find3dPointDiff(p1, p1bis, p2, p2bis, Axe.Y, Axe.Z, Axe.X),
+                find3dPointDiff(p1, p1bis, p2, p2bis, Axe.Z, Axe.X, Axe.Y)
+        );
     }
 
     private Function<Point3d, Point3d> find3dPointDiff(Point3d p1, Point3d p2, Point3d p1bis, Point3d p2bis) {
