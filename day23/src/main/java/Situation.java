@@ -11,13 +11,15 @@ public final class Situation {
     private int correctlyPlacedPods;
     private Situation parent;
     private double heuristic;
+    private Movement movement;
 
-    public Situation(List<Chamber> lstChambers, Parkings parkings, long cost, Situation parent) {
+    public Situation(List<Chamber> lstChambers, Parkings parkings, long cost, Situation parent, Movement movement) {
         this.lstChambers = lstChambers;
         this.parkings = parkings;
         this.cost = cost;
         this.correctlyPlacedPods = countCorrectlyPlacedPods();
         this.parent = parent;
+        this.movement = movement;
     }
 
     public boolean isFinished() {
@@ -46,12 +48,13 @@ public final class Situation {
         return moves;
     }
 
-    public Situation clone(int moveCost) {
+    public Situation clone(int moveCost, Movement movement) {
         return new Situation(
                 lstChambers.stream().map(Chamber::clone).toList(),
                 parkings.clone(),
                 cost + moveCost,
-                this
+                this,
+                movement
         );
     }
 
@@ -59,8 +62,9 @@ public final class Situation {
     public Situation moveChamberToParking(Chamber from, int parkingId) {
         int moveCost = from.canMoveToParking(parkingId, this.parkings());
         if (moveCost > 0) {
-            Situation result = this.clone(moveCost);
-            result.parkings.set(parkingId, result.lstChambers.get(from.getIdx()).pollLast());
+            Situation result = this.clone(moveCost, new Movement(MovementType.CHAMBER_TO_PARKING, from.getIdx(), parkingId, from.getLast()));
+            Amphipod amphipod = result.lstChambers.get(from.getIdx()).pollLast();
+            result.parkings.set(parkingId, amphipod);
             result.correctlyPlacedPods = result.countCorrectlyPlacedPods();
             result.computeHeuristic();
             return result;
@@ -71,7 +75,7 @@ public final class Situation {
     public Situation moveParkingToChamber(int parkingId, Chamber to) {
         int moveCost = parkings().canMoveToChamber(parkingId, to);
         if (moveCost > 0) {
-            Situation result = this.clone(moveCost);
+            Situation result = this.clone(moveCost, new Movement(MovementType.PARKING_TO_CHAMBER, parkingId, to.getIdx(), parkings().get(parkingId)));
             result.lstChambers.get(to.getIdx()).add(result.parkings().get(parkingId));
             result.parkings.set(parkingId, null);
             result.correctlyPlacedPods = result.countCorrectlyPlacedPods();
@@ -140,5 +144,13 @@ public final class Situation {
                         .mapToInt(Chamber::totalStepsToDestination)
                         .sum() +
                 parkings.totalStepsToDestination() + (cost / 10d);
+    }
+
+    public Situation getParent() {
+        return parent;
+    }
+
+    public Movement getMovement() {
+        return movement;
     }
 }

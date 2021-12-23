@@ -27,7 +27,7 @@ public class Day23 extends AbstractDay {
         initialSituation = new Situation(new ArrayList<>(IntStream.range(0, 4).mapToObj((int idx) -> new Chamber(idx, step.getChamberCapacity())).collect(Collectors.toList())),
                 new Parkings(),
                 0,
-                null);
+                null, null);
         this.step = step;
         while (this.hasMoreLines()) {
             this.readLine();

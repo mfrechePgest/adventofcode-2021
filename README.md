@@ -18,4 +18,6 @@ Je me suis amusé à faire une visualisation pour certaines journées :
 
 `./gradlew :day13:gui:run` pour lancer la visualization du jour 13
 
+`./gradlew :day23:gui:run` pour lancer la visualization du jour 23
+
 Et `SPACE` pour lancer l'animation 
