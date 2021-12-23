@@ -18,6 +18,16 @@ public class Day23Test {
     }
 
     @Test
+    public void testJerome_step1() throws IOException {
+        Day23 day23 = new Day23("jerome.txt", Step.STEP_1);
+
+        Situation bestPath = day23.getBestPath();
+
+        System.out.println("bestPath = " + bestPath);
+        assertEquals(14510, bestPath.cost());
+    }
+
+    @Test
     public void testSample1_step2() throws IOException {
         Day23 day23 = new Day23("sample.txt", Step.STEP_2);
 

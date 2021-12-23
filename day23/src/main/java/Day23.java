@@ -15,6 +15,11 @@ public class Day23 extends AbstractDay {
 
         Situation bestPath = day23.getBestPath();
         System.out.println("Step 1 = " + ConsoleColors.cyan(bestPath.cost()));
+
+        day23 = new Day23("input.txt", Step.STEP_2);
+
+        bestPath = day23.getBestPath();
+        System.out.println("Step 2 = " + ConsoleColors.cyan(bestPath.cost()));
     }
 
     public Day23(String fileName, Step step) throws IOException {
@@ -48,10 +53,8 @@ public class Day23 extends AbstractDay {
 
     public Situation getBestPath() {
         PriorityQueue<Situation> priorityQueue = new PriorityQueue<>(
-                Comparator.comparingLong(s -> s.cost() + (step.getChamberCapacity() * 4L) - s.getCorrectlyPlacedPods())
-//                Comparator.comparingInt(Situation::getCorrectlyPlacedPods).reversed()
-//                                .thenComparingLong(Situation::cost)
-        );
+                Comparator.comparingDouble(Situation::getHeuristic));
+
 
         Set<Situation> visitedCells = new HashSet<>();
         initialSituation.findAllPossibleMoves()
@@ -69,14 +72,11 @@ public class Day23 extends AbstractDay {
                         .filter(c -> !visitedCells.contains(c))
                         .forEach(p -> addToQueue(p, priorityQueue));
             }
-            if (iteration % 50 == 0) {
-                System.out.println(path);
-            }
             iteration++;
         }
 
 
-        System.err.println("On s'est perdu ?");
+        System.err.println("On s'est perdu ? en " +iteration + " iterations");
         return null;
     }
 
@@ -85,7 +85,7 @@ public class Day23 extends AbstractDay {
                 .filter(s -> s.equals(path))
                 .findFirst();
         if (existingElemInQueue.isPresent()) {
-            if (path.cost() < existingElemInQueue.get().cost()) {
+            if (path.getHeuristic() < existingElemInQueue.get().getHeuristic()) {
                 priorityQueue.remove(existingElemInQueue.get());
                 priorityQueue.add(path);
             }

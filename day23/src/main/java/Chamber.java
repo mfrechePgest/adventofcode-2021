@@ -19,7 +19,7 @@ public class Chamber extends LinkedList<Amphipod> {
     public int canMoveToParking(int parking, Parkings parkings) {
         List<Integer> parkingsATraverser = hasToMoveThroughToParking(parking);
         if (parkingsATraverser.stream().map(parkings::get).allMatch(Objects::isNull)) {
-            return this.getLast().energyCost(this.countSteps(parkingsATraverser));
+            return this.getLast().energyCost(countSteps(parkingsATraverser, this.size(), this.fullCapacity));
         }
         return -1;
     }
@@ -28,14 +28,26 @@ public class Chamber extends LinkedList<Amphipod> {
         if (situation.lstChambers().get(chamber).size() < fullCapacity) {
             List<Integer> parkingsATraverser = hasToMoveThroughToOtherChamber(chamber);
             if (parkingsATraverser.stream().map(i -> situation.parkings().get(i)).allMatch(Objects::isNull)) {
-                return this.getLast().energyCost(this.countSteps(parkingsATraverser) + ( fullCapacity + 1 - situation.lstChambers().get(chamber).size() ));
+                return this.getLast().energyCost(countStepsToOtherChamber(chamber, situation, parkingsATraverser));
             }
         }
         return -1;
     }
 
-    public int countSteps(List<Integer> parkingsATraverser) {
-        int steps = fullCapacity + 1 - this.size(); // get out of chamber
+    private int countStepsToOtherChamber(int chamber, Situation situation, List<Integer> parkingsATraverser) {
+        return countSteps(parkingsATraverser, this.size(), this.fullCapacity) + (fullCapacity + 1 - situation.lstChambers().get(chamber).size());
+    }
+
+    /**
+     * Sans prendre en considération les obstacles
+     */
+    private int countStepsToOtherChamber(int indexInChamber, int chamber) {
+        List<Integer> parkingsATraverser = hasToMoveThroughToOtherChamber(chamber);
+        return countSteps(parkingsATraverser, indexInChamber, this.fullCapacity) + 1;
+    }
+
+    public static int countSteps(List<Integer> parkingsATraverser, int idxInChamber, int chamberFullCapacity) {
+        int steps = chamberFullCapacity + 1 - idxInChamber; // get out of chamber
         Integer previousParking = null;
         for (Integer parkingATraverser : parkingsATraverser) {
             if (previousParking != null) {
@@ -49,12 +61,16 @@ public class Chamber extends LinkedList<Amphipod> {
     }
 
     public List<Integer> hasToMoveThroughToParking(int parking) {
-        if (parking >= idx + 2) {
+        return hasToMoveThroughToParking(idx, parking);
+    }
+
+    public static List<Integer> hasToMoveThroughToParking(int chamber, int parking) {
+        if (parking >= chamber + 2) {
             // vers la droite
-            return IntStream.range(idx + 2, parking + 1).boxed().toList();
+            return IntStream.range(chamber + 2, parking + 1).boxed().toList();
         } else {
             // vers la gauche
-            return IntStream.range(parking, idx + 2).boxed().sorted(Comparator.reverseOrder()).toList();
+            return IntStream.range(parking, chamber + 2).boxed().sorted(Comparator.reverseOrder()).toList();
         }
     }
 
@@ -69,18 +85,11 @@ public class Chamber extends LinkedList<Amphipod> {
     }
 
     public boolean isFinished() {
-        return this.size() == 2 && this.stream().allMatch(this::isRequiredPod);
+        return this.size() == getFullCapacity() && this.stream().allMatch(this::isRequiredPod);
     }
 
     public boolean isRequiredPod(Amphipod pod) {
-        return pod ==
-                switch (idx) {
-                    case 0 -> Amphipod.A;
-                    case 1 -> Amphipod.B;
-                    case 2 -> Amphipod.C;
-                    case 3 -> Amphipod.D;
-                    default -> throw new IllegalStateException();
-                };
+        return pod.getTargetChamber() == this.idx;
     }
 
     public Chamber clone() {
@@ -91,25 +100,16 @@ public class Chamber extends LinkedList<Amphipod> {
 
     public Stream<Situation> findAllPossibleMoves(Situation situation) {
         return
-                Stream.concat(
-                                situation.lstChambers()
-                                        .stream()
-                                        .filter(c -> c != this)
-                                        .filter(c -> c.size() < fullCapacity)
-                                        .filter(c -> c.isRequiredPod(this.getLast()))
-                                        .map(c -> situation.moveChamberToChamber(this, c))
-                                ,
-                                IntStream.range(0, situation.parkings().size())
-                                        .filter(p -> situation.parkings().get(p) == null)
-                                        .mapToObj(p -> situation.moveChamberToParking(this, p))
-                        )
+                IntStream.range(0, situation.parkings().size())
+                        .filter(p -> situation.parkings().get(p) == null)
+                        .mapToObj(p -> situation.moveChamberToParking(this, p))
                         .filter(Objects::nonNull);
     }
 
     public int countCorrectlyPlacedPods() {
         int result = 0;
-        for (int i = 0 ; i < size() ; i++ ) {
-            if ( isRequiredPod(this.get(i)) ) {
+        for (int i = 0; i < size(); i++) {
+            if (isRequiredPod(this.get(i))) {
                 result++;
             } else {
                 break;
@@ -120,5 +120,15 @@ public class Chamber extends LinkedList<Amphipod> {
 
     public int getFullCapacity() {
         return fullCapacity;
+    }
+
+    public int totalStepsToDestination() {
+        int totalSteps = 0;
+        for (int i = 0; i < size(); i++) {
+            if (!isRequiredPod(this.get(i))) {
+                totalSteps += countStepsToOtherChamber(i, this.get(i).getTargetChamber());
+            }
+        }
+        return totalSteps;
     }
 }

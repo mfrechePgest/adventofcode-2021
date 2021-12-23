@@ -1,5 +1,6 @@
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -9,6 +10,7 @@ public final class Situation {
     private final long cost;
     private int correctlyPlacedPods;
     private Situation parent;
+    private double heuristic;
 
     public Situation(List<Chamber> lstChambers, Parkings parkings, long cost, Situation parent) {
         this.lstChambers = lstChambers;
@@ -37,6 +39,10 @@ public final class Situation {
                                 .flatMap(i -> parkings.findAllPossibleMoves(i, this))
                 ).filter(Objects::nonNull)
                 .toList();
+        if ( this.getCorrectlyPlacedPods() > 12 ) {
+            System.out.println(this);
+            System.out.println(moves.stream().map(m -> "==> " +m).collect(Collectors.joining("\n")));
+        }
         return moves;
     }
 
@@ -49,16 +55,6 @@ public final class Situation {
         );
     }
 
-    public Situation moveChamberToChamber(Chamber from, Chamber to) {
-        int moveCost = from.canMoveToOtherChamber(to.getIdx(), this);
-        if (moveCost > 0) {
-            Situation result = this.clone(moveCost);
-            result.lstChambers.get(to.getIdx()).add(result.lstChambers.get(from.getIdx()).pollLast());
-            result.correctlyPlacedPods = result.countCorrectlyPlacedPods();
-            return result;
-        }
-        return null;
-    }
 
     public Situation moveChamberToParking(Chamber from, int parkingId) {
         int moveCost = from.canMoveToParking(parkingId, this.parkings());
@@ -66,6 +62,7 @@ public final class Situation {
             Situation result = this.clone(moveCost);
             result.parkings.set(parkingId, result.lstChambers.get(from.getIdx()).pollLast());
             result.correctlyPlacedPods = result.countCorrectlyPlacedPods();
+            result.computeHeuristic();
             return result;
         }
         return null;
@@ -78,6 +75,7 @@ public final class Situation {
             result.lstChambers.get(to.getIdx()).add(result.parkings().get(parkingId));
             result.parkings.set(parkingId, null);
             result.correctlyPlacedPods = result.countCorrectlyPlacedPods();
+            result.computeHeuristic();
             return result;
         }
         return null;
@@ -127,8 +125,20 @@ public final class Situation {
                 "lstChambers=" + lstChambers + ", " +
                 "parkings=" + parkings + ", " +
                 "cost=" + cost + ", " +
-                "correctlyplaced=" +correctlyPlacedPods + ']';
+                "correctlyplaced=" +correctlyPlacedPods + ", " +
+                "heuristic=" + heuristic + ']';
     }
 
 
+    public double getHeuristic() {
+        return heuristic;
+    }
+
+    private void computeHeuristic() {
+        this.heuristic =
+                lstChambers.stream()
+                        .mapToInt(Chamber::totalStepsToDestination)
+                        .sum() +
+                parkings.totalStepsToDestination() + (cost / 10d);
+    }
 }

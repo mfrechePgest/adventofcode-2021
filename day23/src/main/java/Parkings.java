@@ -30,10 +30,10 @@ public class Parkings extends ArrayList<Amphipod> {
     }
 
     public int canMoveToChamber(int parkingId, Chamber to) {
-        if (to.isRequiredPod(this.get(parkingId)) && to.size() < 2 && to.countCorrectlyPlacedPods() == to.size()) {
+        if (to.isRequiredPod(this.get(parkingId)) && to.size() < to.getFullCapacity() && to.countCorrectlyPlacedPods() == to.size()) {
             List<Integer> parkingsATraverser = to.hasToMoveThroughToParking(parkingId);
             if (parkingsATraverser.stream().filter(i -> i != parkingId).map(this::get).allMatch(Objects::isNull)) {
-                return this.get(parkingId).energyCost(to.countSteps(parkingsATraverser) - 1);
+                return this.get(parkingId).energyCost(Chamber.countSteps(parkingsATraverser, to.size(), to.getFullCapacity()) - 1);
             }
             return -1;
         }
@@ -46,11 +46,24 @@ public class Parkings extends ArrayList<Amphipod> {
 
     public Stream<Situation> findAllPossibleMoves(int fromParkingIdx, Situation situation) {
         Amphipod movingPod = this.get(fromParkingIdx);
+        if ( situation.getCorrectlyPlacedPods() >= 14 ) {
+            System.out.println("situation = " + situation);
+            System.out.println("Test des moves depuis parking " + fromParkingIdx);
+        }
         return situation.lstChambers()
                 .stream()
                 .filter(c -> c.isRequiredPod(movingPod))
                 .filter(c -> c.size() < c.getFullCapacity())
                 .filter(c -> c.countCorrectlyPlacedPods() == c.size())
                 .map(c -> situation.moveParkingToChamber(fromParkingIdx, c));
+    }
+
+    public long totalStepsToDestination() {
+        return IntStream.range(0, this.size())
+                .filter(i -> this.get(i) != null)
+                .map(i -> {
+                    List<Integer> parkingsATraverser = Chamber.hasToMoveThroughToParking(this.get(i).getTargetChamber(), i);
+                    return Chamber.countSteps(parkingsATraverser, 2, 1);
+                }).sum();
     }
 }
