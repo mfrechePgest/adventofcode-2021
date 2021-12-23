@@ -1,16 +1,29 @@
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Day23 extends AbstractDay {
 
-    List<Chamber> lstPods = new ArrayList<>();
-    Parkings parkings = new Parkings();
+    Situation initialSituation;
+    private Step step;
+    private static final String[] newLines = {"DCBA", "DBAC"};
 
-    public Day23(String fileName) throws IOException {
+
+    public static void main(String[] args) throws IOException {
+        Day23 day23 = new Day23("input.txt", Step.STEP_1);
+
+        Situation bestPath = day23.getBestPath();
+        System.out.println("Step 1 = " + ConsoleColors.cyan(bestPath.cost()));
+    }
+
+    public Day23(String fileName, Step step) throws IOException {
         this.openFile(fileName);
-        IntStream.range(0, 4).forEach(i -> lstPods.add(new Chamber(i)));
+        initialSituation = new Situation(new ArrayList<>(IntStream.range(0, 4).mapToObj((int idx) -> new Chamber(idx, step.getChamberCapacity())).collect(Collectors.toList())),
+                new Parkings(),
+                0,
+                null);
+        this.step = step;
         while (this.hasMoreLines()) {
             this.readLine();
         }
@@ -22,19 +35,64 @@ public class Day23 extends AbstractDay {
         currentLine = currentLine.replace("#", "").trim();
         if (currentLine.matches("[A-Z]*")) {
             for (int i = 0; i < currentLine.length(); i++) {
-                lstPods.get(i).push(Amphipod.valueOf("" + currentLine.charAt(i)));
+                Chamber chamber = initialSituation.lstChambers().get(i);
+                chamber.push(Amphipod.valueOf("" + currentLine.charAt(i)));
+                if (step == Step.STEP_2 && chamber.size() == 1) {
+                    chamber.push(Amphipod.valueOf("" + newLines[0].charAt(i)));
+                    chamber.push(Amphipod.valueOf("" + newLines[1].charAt(i)));
+                }
             }
         }
         currentLine = br.readLine();
     }
 
+    public Situation getBestPath() {
+        PriorityQueue<Situation> priorityQueue = new PriorityQueue<>(
+                Comparator.comparingLong(s -> s.cost() + (step.getChamberCapacity() * 4L) - s.getCorrectlyPlacedPods())
+//                Comparator.comparingInt(Situation::getCorrectlyPlacedPods).reversed()
+//                                .thenComparingLong(Situation::cost)
+        );
+
+        Set<Situation> visitedCells = new HashSet<>();
+        initialSituation.findAllPossibleMoves()
+                .forEach(path -> addToQueue(path, priorityQueue));
+
+        long iteration = 0;
+        while (!priorityQueue.isEmpty()) {
+            Situation path = priorityQueue.poll();
+            visitedCells.add(path);
+            if (path.isFinished()) {
+                return path;
+            } else {
+                path.findAllPossibleMoves()
+                        .stream()
+                        .filter(c -> !visitedCells.contains(c))
+                        .forEach(p -> addToQueue(p, priorityQueue));
+            }
+            if (iteration % 50 == 0) {
+                System.out.println(path);
+            }
+            iteration++;
+        }
 
 
-    public boolean isFinished() {
-        return lstPods
-                .stream()
-                .allMatch(
-                        c -> c.stream().distinct().count() == 1
-                );
+        System.err.println("On s'est perdu ?");
+        return null;
     }
+
+    private void addToQueue(Situation path, PriorityQueue<Situation> priorityQueue) {
+        Optional<Situation> existingElemInQueue = priorityQueue.stream()
+                .filter(s -> s.equals(path))
+                .findFirst();
+        if (existingElemInQueue.isPresent()) {
+            if (path.cost() < existingElemInQueue.get().cost()) {
+                priorityQueue.remove(existingElemInQueue.get());
+                priorityQueue.add(path);
+            }
+        } else {
+            priorityQueue.add(path);
+        }
+    }
+
+
 }
