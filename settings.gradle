@@ -26,4 +26,5 @@ include 'day21'
 include 'day22'
 include 'day23'
 include 'day23:gui'
+include 'day24'
 
