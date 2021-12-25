@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -56,7 +57,7 @@ public class Day24Test {
     public void sampleTestFindLargest() throws IOException {
         Day24 day24 = new Day24("sample.txt");
 
-        String result = day24.findLargestModelNumber();
+        String result = day24.findBestResult(Comparator.reverseOrder());
 
         System.out.println("result = " + result);
 

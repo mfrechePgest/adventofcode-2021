@@ -3,10 +3,8 @@ import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Day24 extends AbstractDay {
@@ -35,16 +33,7 @@ public class Day24 extends AbstractDay {
         this.closeFile();
     }
 
-    public String findLargestModelNumber() {
-        String largest = IntStream.range(0, 14).mapToObj(i -> "9").collect(Collectors.joining());
-        return findLargestModelNumber(largest);
-    }
-
-    public String findLargestModelNumber(String startsWith) {
-        return iterateOverIndex(startsWith, 0, new AtomicLong(0), true);
-    }
-
-    private String findBestResult(Comparator<Integer> comparator) {
+    public String findBestResult(Comparator<Integer> comparator) {
         Map<FourDimensions, String> mapResultats = new HashMap<>();
         mapResultats.put(new FourDimensions(0, 0, 0, 0, null, 0), "");
         for (int i = 0; i < 14; i++) {
@@ -78,49 +67,6 @@ public class Day24 extends AbstractDay {
                 .filter(e -> e.getKey().z() == 0)
                 .map(Map.Entry::getValue)
                 .findFirst().orElse(null);
-    }
-
-    private String iterateOverIndex(String startWith, int index, AtomicLong iterations, boolean firstRound) {
-        for (int i = firstRound ? Character.getNumericValue(startWith.charAt(index)) : 9;
-             i > 0; i--) {
-            String largest;
-
-            char[] charArray = startWith.toCharArray();
-            charArray[index] = Character.forDigit(i, 10);
-            startWith = String.valueOf(charArray);
-
-            if (index < 13) {
-                largest = iterateOverIndex(startWith, index + 1, iterations, firstRound);
-                if (largest != null) return largest;
-            } else {
-                largest = innerIterate(startWith, iterations);
-                if (largest != null) return largest;
-            }
-
-            firstRound = false;
-        }
-        return null;
-    }
-
-    private String innerIterate(String startWith, AtomicLong iterations) {
-
-        FourDimensions fd = this.apply(startWith);
-
-        if (iterations.longValue() % 10000000 == 0) {
-            System.out.println("======================");
-            System.out.println("iterations = " + iterations);
-            System.out.println("largest = " + startWith);
-            System.out.println("fd = " + fd);
-            System.out.println("======================");
-        }
-
-        iterations.incrementAndGet();
-
-        if (fd.z() == 0) {
-            System.out.println("fd = " + fd);
-            return startWith;
-        }
-        return null;
     }
 
     public FourDimensions apply(String modelNumber) {
