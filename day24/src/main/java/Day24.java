@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -12,7 +14,7 @@ public class Day24 extends AbstractDay {
     public static void main(String[] args) throws IOException {
         Day24 day24 = new Day24("input.txt");
 
-        String result = day24.findLargestModelNumber("99996893995692");
+        String result = day24.findLargestModelNumber("99986249646877");
 
         System.out.println("step 1 = " + ConsoleColors.cyan(result));
     }
@@ -34,65 +36,70 @@ public class Day24 extends AbstractDay {
         String largest = startsWith;
         Long largestNumber = Long.valueOf(largest);
         FourDimensions fd = this.apply(largest);
-        long iterations = 0;
-//        return iterateOverIndex(startsWith, 13, iterations);
-        while (fd.z() != 0) {
-            if (iterations % 1000000 == 0) {
-                System.out.println("======================");
-                System.out.println("iterations = " + iterations);
-                System.out.println("largest = " + largest);
-                System.out.println("fd = " + fd);
-                System.out.println("======================");
-            }
-            largestNumber--;
-            largest = String.valueOf(largestNumber);
-            while (largest.contains("0")) {
-                largestNumber--;
-                largest = String.valueOf(largestNumber);
-            }
-            if (largest.length() < 14) {
-                throw new IllegalStateException("On n'a pas trouvé !");
-            }
-            fd = this.apply(largest);
-            iterations++;
-        }
-        System.out.println("fd = " + fd);
-        return largest;
+        return iterateOverIndex(startsWith, 0, new AtomicLong(0), true);
+//        while (fd.z() != 0) {
+//            if (iterations % 10000000 == 0) {
+//                System.out.println("======================");
+//                System.out.println("iterations = " + iterations);
+//                System.out.println("largest = " + largest);
+//                System.out.println("fd = " + fd);
+//                System.out.println("======================");
+//            }
+//            largestNumber--;
+//            largest = String.valueOf(largestNumber);
+//            while (largest.contains("0")) {
+//                largestNumber--;
+//                largest = String.valueOf(largestNumber);
+//            }
+//            if (largest.length() < 14) {
+//                throw new IllegalStateException("On n'a pas trouvé !");
+//            }
+//            fd = this.apply(largest);
+//            iterations++;
+//        }
+//        System.out.println("fd = " + fd);
+//        return largest;
     }
 
-    private String iterateOverIndex(String startWith, int index, long iterations) {
-        for (int i = Character.getNumericValue(startWith.charAt(index)); i > 0; i--) {
+    private String iterateOverIndex(String startWith, int index, AtomicLong iterations, boolean firstRound) {
+        for (int i = firstRound ? Character.getNumericValue(startWith.charAt(index)) : 9;
+             i > 0; i--) {
             String largest;
-            if (index > 0) {
-                largest = iterateOverIndex(startWith, index - 1, iterations);
+
+            char[] charArray = startWith.toCharArray();
+            charArray[index] = Character.forDigit(i, 10);
+            startWith = String.valueOf(charArray);
+
+            if (index < 13) {
+                largest = iterateOverIndex(startWith, index + 1, iterations, firstRound);
+                if (largest != null) return largest;
+            } else {
+                largest = innerIterate(startWith, iterations);
                 if (largest != null) return largest;
             }
-            largest = innerIterate(startWith, index, (char) i, iterations);
-            if (largest != null) return largest;
-            iterations++;
+
+            firstRound = false;
         }
         return null;
     }
 
-    private String innerIterate(String startWith, int index, char i, long iterations) {
-        char[] charArray = startWith.toCharArray();
-        charArray[index] = i;
-        String largest = String.valueOf(charArray);
+    private String innerIterate(String startWith, AtomicLong iterations) {
 
-        if (largest.length() < 14) {
-            throw new IllegalStateException("On n'a pas trouvé !");
-        }
-        FourDimensions fd = this.apply(largest);
-        if (iterations % 1000000 == 0) {
+        FourDimensions fd = this.apply(startWith);
+
+        if (iterations.longValue() % 10000000 == 0) {
             System.out.println("======================");
             System.out.println("iterations = " + iterations);
-            System.out.println("largest = " + largest);
+            System.out.println("largest = " + startWith);
             System.out.println("fd = " + fd);
             System.out.println("======================");
         }
+
+        iterations.incrementAndGet();
+
         if ( fd.z() == 0 ) {
             System.out.println("fd = " + fd);
-            return largest;
+            return startWith;
         }
         return null;
     }
