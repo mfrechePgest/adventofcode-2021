@@ -1,5 +1,8 @@
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -9,14 +12,19 @@ import java.util.stream.IntStream;
 public class Day24 extends AbstractDay {
 
     private Function<FourDimensions, FourDimensions> operations;
-//    private List<Function<FourDimensions, FourDimensions>> revertedOperations = new LinkedList<>();
+    private int currentDigit = -1;
+    private Map<Integer, BiFunction<Integer, FourDimensions, FourDimensions>> operationsPerDigit = new HashMap<>();
+    private Map<Integer, Function<FourDimensions, FourDimensions>> resetFirstInputColumnPerDigit = new HashMap<>();
+
 
     public static void main(String[] args) throws IOException {
         Day24 day24 = new Day24("input.txt");
 
-        String result = day24.findLargestModelNumber("99986249646877");
-
+        String result = day24.findBestResult(Comparator.reverseOrder());
         System.out.println("step 1 = " + ConsoleColors.cyan(result));
+
+        result = day24.findBestResult(Comparator.naturalOrder());
+        System.out.println("step 2 = " + ConsoleColors.cyan(result));
     }
 
     public Day24(String fileName) throws IOException {
@@ -33,32 +41,43 @@ public class Day24 extends AbstractDay {
     }
 
     public String findLargestModelNumber(String startsWith) {
-        String largest = startsWith;
-        Long largestNumber = Long.valueOf(largest);
-        FourDimensions fd = this.apply(largest);
         return iterateOverIndex(startsWith, 0, new AtomicLong(0), true);
-//        while (fd.z() != 0) {
-//            if (iterations % 10000000 == 0) {
-//                System.out.println("======================");
-//                System.out.println("iterations = " + iterations);
-//                System.out.println("largest = " + largest);
-//                System.out.println("fd = " + fd);
-//                System.out.println("======================");
-//            }
-//            largestNumber--;
-//            largest = String.valueOf(largestNumber);
-//            while (largest.contains("0")) {
-//                largestNumber--;
-//                largest = String.valueOf(largestNumber);
-//            }
-//            if (largest.length() < 14) {
-//                throw new IllegalStateException("On n'a pas trouvé !");
-//            }
-//            fd = this.apply(largest);
-//            iterations++;
-//        }
-//        System.out.println("fd = " + fd);
-//        return largest;
+    }
+
+    private String findBestResult(Comparator<Integer> comparator) {
+        Map<FourDimensions, String> mapResultats = new HashMap<>();
+        mapResultats.put(new FourDimensions(0, 0, 0, 0, null, 0), "");
+        for (int i = 0; i < 14; i++) {
+            System.out.println("Examen du " + (i + 1) + "e digit...");
+            System.out.println(mapResultats.size() + " possibilités");
+            int digitIndex = i;
+            Map<FourDimensions, String> newMapResult = new HashMap<>();
+            IntStream.range(1, 10)
+                    .boxed()
+                    .sorted(comparator)
+                    .flatMap(digit -> mapResultats
+                            .entrySet()
+                            .stream()
+                            .map(entry -> new AbstractMap.SimpleEntry<>(
+                                            operationsPerDigit.get(digitIndex)
+                                                    // parce que seul Z compte dans l'input, d'un "inp" à l'autre
+                                                    .andThen(f -> f.opW("0", FourDimensions::mul))
+                                                    .andThen(f -> f.opX("0", FourDimensions::mul))
+                                                    .andThen(f -> f.opY("0", FourDimensions::mul))
+                                                    .apply(digit, entry.getKey()),
+                                            entry.getValue() + digit
+                                    )
+                            )
+                    )
+                    .forEach(e -> newMapResult.computeIfAbsent(e.getKey(), k -> e.getValue()));
+            mapResultats.clear();
+            mapResultats.putAll(newMapResult);
+        }
+        return mapResultats.entrySet()
+                .stream()
+                .filter(e -> e.getKey().z() == 0)
+                .map(Map.Entry::getValue)
+                .findFirst().orElse(null);
     }
 
     private String iterateOverIndex(String startWith, int index, AtomicLong iterations, boolean firstRound) {
@@ -97,7 +116,7 @@ public class Day24 extends AbstractDay {
 
         iterations.incrementAndGet();
 
-        if ( fd.z() == 0 ) {
+        if (fd.z() == 0) {
             System.out.println("fd = " + fd);
             return startWith;
         }
@@ -122,33 +141,42 @@ public class Day24 extends AbstractDay {
             case "eql" -> this.biOperation(splitted, FourDimensions::eql);
             default -> throw new IllegalStateException("Unsupported operation " + currentLine);
         };
-//        revertedOperations.add(0,
-//                switch (splitted[0]) {
-//                    case "inp" -> this.inp(currentLine);
-//                    case "add" -> this.biOperation(splitted, FourDimensions::sub);
-//                    case "mul" -> this.biOperation(splitted, FourDimensions::div);
-//                    case "div" -> this.biOperation(splitted, FourDimensions::mul);
-//                    case "mod" -> Function.identity();
-//                    case "eql" -> this.biOperation(splitted, FourDimensions::eql);
-//                    default -> throw new IllegalStateException("Unsupported operation " + currentLine);
-//                }
-//        );
         if (operations == null) {
             operations = newOp;
         } else {
             operations = operations.andThen(newOp);
         }
+        if (!splitted[0].equals("inp")) {
+            operationsPerDigit.put(currentDigit, operationsPerDigit.get(currentDigit).andThen(newOp));
+        }
         currentLine = br.readLine();
     }
 
     private Function<FourDimensions, FourDimensions> inp(String currentLine) {
-        return switch (currentLine.charAt(4)) {
-            case 'w' -> FourDimensions::inpW;
-            case 'x' -> FourDimensions::inpX;
-            case 'y' -> FourDimensions::inpY;
-            case 'z' -> FourDimensions::inpZ;
+        currentDigit++;
+        switch (currentLine.charAt(4)) {
+            case 'w' -> {
+                resetFirstInputColumnPerDigit.put(currentDigit, f -> f.opW("0", FourDimensions::mul));
+                operationsPerDigit.put(currentDigit, (i, f) -> f.inpW(i));
+                return FourDimensions::inpW;
+            }
+            case 'x' -> {
+                resetFirstInputColumnPerDigit.put(currentDigit, f -> f.opX("0", FourDimensions::mul));
+                operationsPerDigit.put(currentDigit, (i, f) -> f.inpX(i));
+                return FourDimensions::inpX;
+            }
+            case 'y' -> {
+                resetFirstInputColumnPerDigit.put(currentDigit, f -> f.opY("0", FourDimensions::mul));
+                operationsPerDigit.put(currentDigit, (i, f) -> f.inpY(i));
+                return FourDimensions::inpY;
+            }
+            case 'z' -> {
+                resetFirstInputColumnPerDigit.put(currentDigit, f -> f.opZ("0", FourDimensions::mul));
+                operationsPerDigit.put(currentDigit, (i, f) -> f.inpZ(i));
+                return FourDimensions::inpZ;
+            }
             default -> throw new IllegalArgumentException();
-        };
+        }
     }
 
 

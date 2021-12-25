@@ -1,22 +1,37 @@
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public record FourDimensions(int w, int x, int y, int z, String modelNumber, int modelIndex) {
 
     public FourDimensions inpX() {
-        return new FourDimensions(w, Character.getNumericValue(modelNumber.charAt(modelIndex)), y, z, modelNumber, modelIndex + 1);
+        return inpX(Character.getNumericValue(modelNumber.charAt(modelIndex)));
+    }
+
+    public FourDimensions inpX(int input) {
+        return new FourDimensions(w, input, y, z, modelNumber, modelIndex + 1);
     }
 
     public FourDimensions inpY() {
-        return new FourDimensions(w, x, Character.getNumericValue(modelNumber.charAt(modelIndex)), z, modelNumber,modelIndex + 1);
+        return inpY(Character.getNumericValue(modelNumber.charAt(modelIndex)));
+    }
+
+    public FourDimensions inpY(int input) {
+        return new FourDimensions(w, x, input, z, modelNumber,modelIndex + 1);
     }
 
     public FourDimensions inpW() {
-        return new FourDimensions(Character.getNumericValue(modelNumber.charAt(modelIndex)), x, y, z, modelNumber,modelIndex + 1);
+        return inpW(Character.getNumericValue(modelNumber.charAt(modelIndex)));
+    }
+
+    public FourDimensions inpW(int input) {
+        return new FourDimensions(input, x, y, z, modelNumber,modelIndex + 1);
     }
 
     public FourDimensions inpZ() {
-        return new FourDimensions(w, x, y, Character.getNumericValue(modelNumber.charAt(modelIndex)), modelNumber,modelIndex + 1);
+        return inpZ(Character.getNumericValue(modelNumber.charAt(modelIndex)));
+    }
+
+    public FourDimensions inpZ(int input) {
+        return new FourDimensions(w, x, y, input, modelNumber,modelIndex + 1);
     }
 
     public FourDimensions opW(String mul, BiFunction<Integer, Integer, Integer> operation) {
