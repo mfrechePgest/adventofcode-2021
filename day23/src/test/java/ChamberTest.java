@@ -67,7 +67,7 @@ public class ChamberTest {
                         new Chamber(2, 2),
                         new Chamber(3, 2)
                 ),
-                new Parkings(), 0, null)
+                new Parkings(), 0, null, null)
         );
         assertEquals(500, cost);
     }
@@ -91,7 +91,7 @@ public class ChamberTest {
                         c2,
                         new Chamber(3, 2)
                 ),
-                new Parkings(), 0, null));
+                new Parkings(), 0, null, null));
         assertEquals(400, cost);
     }
 
@@ -113,7 +113,7 @@ public class ChamberTest {
                         c2,
                         new Chamber(3, 2)
                 ),
-                new Parkings(), 0, null));
+                new Parkings(), 0, null, null));
         assertEquals(500, cost);
     }
 
