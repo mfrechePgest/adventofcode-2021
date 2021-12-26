@@ -22,7 +22,7 @@ public class Day17 {
         int highestY = 0;
         Integer bestXVelocity = null;
         Integer bestYVelocity = null;
-        for (int i = 0 ; i < 500 ; i++ ) { // TODO un max moins pifé ?
+        for (int i = 0 ; i < 500 ; i++ ) { // un max moins pifé ?
             for (int j = 0 ; j < 500 ; j++ ) {
                 Integer maxY = simulateThrow(i, j);
                 if ( maxY != null && maxY > highestY ) {
@@ -38,7 +38,7 @@ public class Day17 {
 
     public Integer findEveryThrowInTarget() {
         int count = 0;
-        for (int i = -500 ; i < 500 ; i++ ) { // TODO range moins pifé ?
+        for (int i = -500 ; i < 500 ; i++ ) { // range moins pifé ?
             for (int j = -500 ; j < 500 ; j++ ) {
                 Integer maxY = simulateThrow(i, j);
                 if ( maxY != null ) {

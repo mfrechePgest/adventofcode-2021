@@ -259,8 +259,4 @@ public class Day23Gui {
     }
 
 
-    private record Colors(float red, float green, float blue, float alpha) {
-    }
-
-
 }
