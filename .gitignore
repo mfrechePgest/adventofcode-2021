@@ -75,3 +75,6 @@ fabric.properties
 
 /.gradle/
 /build/
+
+# VS code build files
+bin/

@@ -53,14 +53,4 @@ public class Day24Test {
 
     }
 
-    @Test
-    public void sampleTestFindLargest() throws IOException {
-        Day24 day24 = new Day24("sample.txt");
-
-        String result = day24.findBestResult(Comparator.reverseOrder());
-
-        System.out.println("result = " + result);
-
-    }
-
 }
